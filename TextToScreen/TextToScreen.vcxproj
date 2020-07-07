@@ -154,11 +154,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Keybord.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="SCException.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Keybord.h" />
     <ClInclude Include="MinimalWindows.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SCException.h" />

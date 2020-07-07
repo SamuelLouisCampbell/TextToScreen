@@ -24,6 +24,9 @@
     <ClCompile Include="SCException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Keybord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MinimalWindows.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Keybord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
