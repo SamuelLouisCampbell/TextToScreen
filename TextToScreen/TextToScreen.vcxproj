@@ -180,7 +180,7 @@
     <ResourceCompile Include="TextToScreen3.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="scico.ico" />
+    <Image Include="sclighting.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
