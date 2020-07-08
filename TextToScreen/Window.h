@@ -1,8 +1,10 @@
 #pragma once
 #include "MinimalWindows.h"
+#include <optional>
 #include "SCException.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+
 
 
 class Window
@@ -41,6 +43,9 @@ public:
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
+	void SetWindowTitle(const std::string title);
+	static std::optional<int> ProcessMessages();
+
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgAdapter(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -57,4 +62,5 @@ private:
 
 //error exception helper macro
 #define SCWND_EXCEPT( hr ) Window::Exception( __LINE__,__FILE__,hr)
+#define SCWND_LAST_EXCEPT() Window::Exception( __LINE__,__FILE__,GetLastError())
 

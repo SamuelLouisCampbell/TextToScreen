@@ -1,4 +1,5 @@
 #include "Mouse.h"
+#include "MinimalWindows.h"
 
 std::pair<int, int> Mouse::GetPos() const noexcept
 {
@@ -13,6 +14,11 @@ int Mouse::GetPosX() const noexcept
 int Mouse::GetPosY() const noexcept
 {
 	return y;
+}
+
+bool Mouse::IsInWindow() const noexcept
+{
+	return isInWindow;
 }
 
 bool Mouse::LeftIsPressed() const noexcept
@@ -56,6 +62,20 @@ void Mouse::OnMouseMove(int x_in, int y_in) noexcept
 	y = y_in;
 
 	buffer.push(Mouse::Event(Mouse::Event::Type::Move, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnMouseLeave() noexcept
+{
+	isInWindow = false;
+	buffer.push(Mouse::Event(Mouse::Event::Type::Leave, *this));
+	TrimBuffer();
+}
+
+void Mouse::OnMouseEnter() noexcept
+{
+	isInWindow = true;
+	buffer.push(Mouse::Event(Mouse::Event::Type::Enter, *this));
 	TrimBuffer();
 }
 
@@ -111,6 +131,22 @@ void Mouse::OnWheelDown(int x, int y) noexcept
 {
 	buffer.push(Mouse::Event(Mouse::Event::Type::WheelDown, *this));
 	TrimBuffer();
+}
+
+void Mouse::OnWheelDelta(int x, int y, int delta) noexcept
+{
+	wheelDeltaCarry += delta;
+	//generate events for every 120 
+	while (wheelDeltaCarry >= WHEEL_DELTA)
+	{
+		wheelDeltaCarry -= WHEEL_DELTA;
+		OnWheelUp(x, y);
+	}
+	while (wheelDeltaCarry <= -WHEEL_DELTA)
+	{
+		wheelDeltaCarry += WHEEL_DELTA;
+		OnWheelDown(x, y);
+	}
 }
 
 void Mouse::TrimBuffer() noexcept

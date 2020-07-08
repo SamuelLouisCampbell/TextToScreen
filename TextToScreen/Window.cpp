@@ -42,6 +42,9 @@ Window::WindowClass::~WindowClass()
 }
 
 Window::Window(int width, int height, const char* name) noexcept
+	:
+	width(width),
+	height(height)
 {
 	//adjust window CLIENT area to desired size
 	RECT wr; 
@@ -49,7 +52,10 @@ Window::Window(int width, int height, const char* name) noexcept
 	wr.right = width + wr.left;
 	wr.top = 100;
 	wr.bottom = height + wr.top;
-	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
+	{
+		throw SCWND_LAST_EXCEPT();
+	}
 	// create window and get handle
 	hWnd = CreateWindow(
 		WindowClass::GetName(), name,
@@ -66,6 +72,31 @@ Window::Window(int width, int height, const char* name) noexcept
 Window::~Window()
 {
 	DestroyWindow(hWnd);
+}
+
+void Window::SetWindowTitle(const std::string title)
+{
+	if (SetWindowText(hWnd, title.c_str()) == 0)
+	{
+		throw SCWND_LAST_EXCEPT();
+	}
+}
+
+std::optional<int> Window::ProcessMessages()
+{
+	MSG msg;
+	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+	{
+		if (msg.message == WM_QUIT)
+		{
+			return msg.wParam;
+		}
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+
+	}
+	//return empty optional when not quitting app
+	return{};
 }
 
 LRESULT Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -101,8 +132,32 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 
 	case WM_MOUSEMOVE:
 	{
-		POINTS pt = MAKEPOINTS(lParam);
-		mouse.OnMouseMove(pt.x, pt.y);
+		const POINTS pt = MAKEPOINTS(lParam);
+		//Mouse is inside client region, log data
+		if (pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height)
+		{
+			mouse.OnMouseMove(pt.x, pt.y);
+			if (!mouse.IsInWindow())
+			{
+				SetCapture(hWnd);
+				mouse.OnMouseEnter();
+			}
+		}
+		//Mouse not in client region, log, maintiain if button down
+		else
+		{
+			if (wParam & (MK_LBUTTON | MK_RBUTTON | MK_MBUTTON))
+			{
+				mouse.OnMouseMove(pt.x, pt.y);
+			}
+			else //button up release capture & log event leaving
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+		}
+
+		break;
 	}
 	case WM_LBUTTONDOWN:
 	{
@@ -143,14 +198,8 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEWHEEL:
 	{
 		const POINTS pt = MAKEPOINTS(lParam);
-		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-		{
-			mouse.OnWheelUp(pt.x, pt.y);
-		}
-		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-		{
-			mouse.OnWheelDown(pt.x, pt.y);
-		}
+		const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+		mouse.OnWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
 

@@ -1,5 +1,6 @@
 #include "Window.h"
-
+#include <sstream>
+#include "App.h"
 int CALLBACK WinMain(
 	HINSTANCE hInstance, 
 	HINSTANCE hPrevInstance, 
@@ -9,22 +10,7 @@ int CALLBACK WinMain(
 {
 	try
 	{	
-		Window wnd(800, 600, "This Is A Window");
-
-		MSG msg;
-		BOOL gResult;
-		while (gResult = GetMessage(&msg, nullptr, 0, 0) > 0)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-	
-		}
-
-		if (gResult == -1)
-		{
-			return -1;
-		}
-		return msg.wParam;
+		return App{}.Go(); 
 	}
 	catch (const SCException& e)
 	{
