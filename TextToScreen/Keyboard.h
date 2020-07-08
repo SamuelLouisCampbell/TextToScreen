@@ -1,5 +1,4 @@
 #pragma once
-#include "Window.h"
 #include <queue>
 #include <bitset>
 
@@ -41,7 +40,7 @@ public:
 		}
 		bool IsValid() const noexcept
 		{
-			return type == Type::Invalid;
+			return type != Type::Invalid;
 		}
 		unsigned char GetCode() const noexcept
 		{

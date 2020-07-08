@@ -21,7 +21,6 @@
 #define NOCOLOR
 #define NOCTLMGR
 #define NODRAWTEXT 
-#define NOGDI
 #define NOKERNEL
 #define NONLS
 #define NOMEMMGR

@@ -1,7 +1,8 @@
 #pragma once
 #include "MinimalWindows.h"
 #include "SCException.h"
-#include "Keybord.h"
+#include "Keyboard.h"
+#include "Mouse.h"
 
 
 class Window
@@ -31,7 +32,7 @@ private:
 		~WindowClass();
 		WindowClass(const WindowClass&) = delete;
 		WindowClass& operator= (const WindowClass&) = delete;
-		static constexpr const char* wndClassName = "Direct3D Engine Window";
+		static constexpr const char* wndClassName = "Direct3D Engine";
 		static WindowClass wndClass;
 		HINSTANCE hInst;
 	};
@@ -46,6 +47,7 @@ private:
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 public:
 	Keyboard kbd;
+	Mouse mouse;
 private:
 	int width;
 	int height;
