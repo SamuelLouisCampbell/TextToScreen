@@ -22,8 +22,9 @@ int CALLBACK WinMain(
 	}
 	catch (...)
 	{
-		MessageBox(nullptr, "No details available","Unkown Exception" , MB_OK | MB_ICONERROR);
+
 	}
+	return -1;
 }
 
 
