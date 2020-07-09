@@ -41,7 +41,7 @@ Window::WindowClass::~WindowClass()
 	UnregisterClass(wndClassName, GetInstance());
 }
 
-Window::Window(int width, int height, const char* name) noexcept
+Window::Window(int width, int height, const char* name)
 	:
 	width(width),
 	height(height)

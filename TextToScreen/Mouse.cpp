@@ -44,6 +44,12 @@ Mouse::Event Mouse::Read() noexcept
 		buffer.pop();
 		return e;
 	}
+	else
+	{
+		//Return empty event?
+		Mouse::Event e{};
+		return e;
+	}
 }
 
 bool Mouse::IsEmpty() const noexcept
